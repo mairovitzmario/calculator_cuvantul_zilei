@@ -2,15 +2,31 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import { filterWordsEasy, loadWords } from './wordFilter'
 
+interface GuessLetter {
+  letter: string;
+  status: 'correct' | 'present' | 'absent' | 'empty';
+}
+
+interface Guess {
+  letters: GuessLetter[];
+}
+
 function App() {
   const [words, setWords] = useState<string[]>([])
   const [filteredWords, setFilteredWords] = useState<string[]>([])
-  const [greenLetters, setGreenLetters] = useState('')
-  const [yellowLetters, setYellowLetters] = useState('')
-  const [grayLetters, setGrayLetters] = useState('')
   const [loading, setLoading] = useState(true)
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
   const [showInstallButton, setShowInstallButton] = useState(false)
+
+  // Game state
+  const [guesses, setGuesses] = useState<Guess[]>([
+    { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) },
+    { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) },
+    { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) },
+    { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) },
+    { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) },
+    { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) }
+  ])
 
   // Load words on component mount
   useEffect(() => {
@@ -39,18 +55,88 @@ function App() {
     }
   }, [])
 
-  // Filter words whenever inputs change
+  // Filter words whenever guesses change
   useEffect(() => {
     if (words.length > 0) {
+      const { greenLetters, yellowLetters, grayLetters } = extractConstraints()
       const filtered = filterWordsEasy(words, greenLetters, yellowLetters, grayLetters)
       setFilteredWords(filtered)
     }
-  }, [words, greenLetters, yellowLetters, grayLetters])
+  }, [words, guesses])
 
-  const clearFilters = () => {
-    setGreenLetters('')
-    setYellowLetters('')
-    setGrayLetters('')
+  const extractConstraints = () => {
+    let greenLetters = ''
+    let yellowLetters = ''
+    const grayLetters = new Set<string>()
+
+    // Build green letters pattern (5 positions)
+    const greenPattern = ['?', '?', '?', '?', '?']
+
+    guesses.forEach(guess => {
+      guess.letters.forEach((letterObj, index) => {
+        if (letterObj.letter) {
+          switch (letterObj.status) {
+            case 'correct':
+              greenPattern[index] = letterObj.letter.toLowerCase()
+              break
+            case 'present':
+              yellowLetters += letterObj.letter.toLowerCase()
+              break
+            case 'absent':
+              grayLetters.add(letterObj.letter.toLowerCase())
+              break
+          }
+        }
+      })
+    })
+
+    greenLetters = greenPattern.join('')
+
+    return {
+      greenLetters,
+      yellowLetters,
+      grayLetters: Array.from(grayLetters).join('')
+    }
+  }
+
+  const handleLetterClick = (guessIndex: number, letterIndex: number) => {
+    const newGuesses = [...guesses]
+    const currentLetter = newGuesses[guessIndex].letters[letterIndex]
+
+    // Cycle through states: empty -> absent -> present -> correct -> empty
+    const statusCycle: GuessLetter['status'][] = ['empty', 'absent', 'present', 'correct']
+    const currentIndex = statusCycle.indexOf(currentLetter.status)
+    const nextIndex = (currentIndex + 1) % statusCycle.length
+
+    newGuesses[guessIndex].letters[letterIndex].status = statusCycle[nextIndex]
+    setGuesses(newGuesses)
+  }
+
+  const handleLetterInput = (guessIndex: number, letterIndex: number, value: string) => {
+    const newGuesses = [...guesses]
+    newGuesses[guessIndex].letters[letterIndex].letter = value.toUpperCase()
+
+    // If letter was empty and now has content, set to absent by default
+    if (value && newGuesses[guessIndex].letters[letterIndex].status === 'empty') {
+      newGuesses[guessIndex].letters[letterIndex].status = 'absent'
+    }
+    // If letter is cleared, set to empty
+    if (!value) {
+      newGuesses[guessIndex].letters[letterIndex].status = 'empty'
+    }
+
+    setGuesses(newGuesses)
+  }
+
+  const clearAllGuesses = () => {
+    setGuesses([
+      { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) },
+      { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) },
+      { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) },
+      { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) },
+      { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) },
+      { letters: Array(5).fill(null).map(() => ({ letter: '', status: 'empty' })) }
+    ])
   }
 
   const handleInstallClick = async () => {
@@ -83,52 +169,47 @@ function App() {
         )}
       </header>
 
-      <div className="filters">
-        <div className="filter-group">
-          <label htmlFor="green">
-            🟩 Litere Verzi (poziție corectă)
-          </label>
-          <input
-            id="green"
-            type="text"
-            value={greenLetters}
-            onChange={(e) => setGreenLetters(e.target.value)}
-            placeholder="ex: a?b?? (folosește ? pentru necunoscut)"
-            maxLength={5}
-          />
-          <small>Exemplu: a?b?? înseamnă 'a' la poziția 1, 'b' la poziția 3</small>
+      <div className="game-section">
+        <h2>📝 Introdu încercările tale</h2>
+        <p className="instructions">
+          Scrie cuvintele pe care le-ai încercat și apasă pe fiecare literă pentru a schimba culoarea:
+        </p>
+        <div className="color-legend">
+          <div className="legend-item">
+            <div className="letter-demo correct">A</div>
+            <span>Verde = Poziție corectă</span>
+          </div>
+          <div className="legend-item">
+            <div className="letter-demo present">B</div>
+            <span>Galben = În cuvânt, poziție greșită</span>
+          </div>
+          <div className="legend-item">
+            <div className="letter-demo absent">C</div>
+            <span>Gri = Nu este în cuvânt</span>
+          </div>
         </div>
 
-        <div className="filter-group">
-          <label htmlFor="yellow">
-            🟨 Litere Galbene (în cuvânt, poziție greșită)
-          </label>
-          <input
-            id="yellow"
-            type="text"
-            value={yellowLetters}
-            onChange={(e) => setYellowLetters(e.target.value)}
-            placeholder="ex: rt"
-          />
-          <small>Exemplu: rt înseamnă că 'r' și 't' sunt în cuvânt</small>
+        <div className="wordle-grid">
+          {guesses.map((guess, guessIndex) => (
+            <div key={guessIndex} className="guess-row">
+              {guess.letters.map((letterObj, letterIndex) => (
+                <div key={letterIndex} className="letter-container">
+                  <input
+                    type="text"
+                    maxLength={1}
+                    value={letterObj.letter}
+                    onChange={(e) => handleLetterInput(guessIndex, letterIndex, e.target.value)}
+                    className={`letter-input ${letterObj.status}`}
+                    onClick={() => handleLetterClick(guessIndex, letterIndex)}
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
 
-        <div className="filter-group">
-          <label htmlFor="gray">
-            ⬜ Litere Gri (nu sunt în cuvânt)
-          </label>
-          <input
-            id="gray"
-            type="text"
-            value={grayLetters}
-            onChange={(e) => setGrayLetters(e.target.value)}
-            placeholder="ex: oilc"
-          />
-          <small>Exemplu: oilc înseamnă că aceste litere nu sunt în cuvânt</small>
-        </div>
-
-        <button onClick={clearFilters} className="clear-btn">
-          Resetează Toate Filtrele
+        <button onClick={clearAllGuesses} className="clear-btn">
+          🗑️ Șterge toate încercările
         </button>
       </div>      <div className="results">
         <div className="results-header">
