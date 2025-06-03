@@ -1,0 +1,30 @@
+{
+    "name": "Calculator Wordle Românesc",
+    "short_name": "Wordle RO",
+    "description": "Filtrează cuvinte românești pentru Wordle",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f9fafb",
+    "theme_color": "#2563eb",
+    "orientation": "portrait-primary",
+    "categories": [
+        "games",
+        "entertainment",
+        "utilities"
+    ],
+    "lang": "ro",
+    "icons": [
+        {
+            "src": "/icon-192.svg",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "/icon-512.svg",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "maskable any"
+        }
+    ]
+}
