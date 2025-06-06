@@ -305,6 +305,21 @@
   justify-content: center;
 }
 
+.guess-row-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-left: 0.5rem;
+}
+
+.row-number {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
 .guess-letters {
   display: flex;
   gap: 0.5rem;
@@ -316,54 +331,17 @@
   margin-left: 0.5rem;
 }
 
-.delete-btn {
-  background: #fef2f2;
-  border: 2px solid #fca5a5;
-  border-radius: 6px;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 1rem;
-}
-
-.delete-btn:hover {
-  background: #fee2e2;
-  border-color: #f87171;
-}
-
-.input-btn {
-  background: #f0f9ff;
-  border: 2px solid #7dd3fc;
-  border-radius: 6px;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 1rem;
-}
-
-.input-btn:hover {
-  background: #e0f2fe;
-  border-color: #38bdf8;
-}
-
-.empty-slot {
+/* Row number styling */
+.guess-row-number {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
-  opacity: 0.5;
+  margin-left: 0.5rem;
 }
 
-.slot-number {
+.row-number {
   font-size: 0.875rem;
   color: #6b7280;
   font-weight: 500;
@@ -713,12 +691,6 @@
     height: 45px;
     font-size: 1.25rem;
   }
-
-  .delete-btn {
-    width: 35px;
-    height: 35px;
-    font-size: 0.875rem;
-  }
   
   .guess-row {
     gap: 0.375rem;
@@ -730,8 +702,7 @@
     gap: 0.375rem;
   }
 
-  .guess-actions {
-    gap: 0.375rem;
+  .guess-row-number {
     margin-left: 0;
   }
   
@@ -752,12 +723,6 @@
     height: 40px;
     font-size: 1.1rem;
   }
-
-  .delete-btn {
-    width: 30px;
-    height: 30px;
-    font-size: 0.75rem;
-  }
   
   .color-legend {
     flex-direction: column;
@@ -773,7 +738,7 @@
     gap: 0.25rem;
   }
 
-  .guess-actions {
+  .guess-row-number {
     gap: 0.25rem;
   }
 }

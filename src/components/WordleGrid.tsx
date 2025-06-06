@@ -5,15 +5,11 @@ import GuessRow from './GuessRow';
 interface WordleGridProps {
     guesses: Guess[];
     onLetterStatusToggle: (guessIndex: number, letterIndex: number) => void;
-    onDeleteGuess: (guessIndex: number) => void;
-    onStartInputting: (guessIndex: number) => void;
 }
 
 const WordleGrid: React.FC<WordleGridProps> = ({
     guesses,
-    onLetterStatusToggle,
-    onDeleteGuess,
-    onStartInputting
+    onLetterStatusToggle
 }) => {
     return (
         <div className="wordle-grid">
@@ -23,8 +19,6 @@ const WordleGrid: React.FC<WordleGridProps> = ({
                     guess={guess}
                     guessIndex={guessIndex}
                     onLetterStatusToggle={onLetterStatusToggle}
-                    onDeleteGuess={onDeleteGuess}
-                    onStartInputting={onStartInputting}
                 />
             ))}
         </div>
