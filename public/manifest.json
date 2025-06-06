@@ -1,6 +1,6 @@
 {
-    "name": "Calculator Wordle Românesc",
-    "short_name": "Wordle RO",
+    "name": "Calculator Cuvantul Zilei",
+    "short_name": "Calculator Cuvant",
     "description": "Filtrează cuvinte românești pentru Wordle",
     "start_url": "/",
     "display": "standalone",

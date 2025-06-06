@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 1rem;
   min-height: 100vh;
+ 
 }
 
 .header {
@@ -87,6 +88,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
+  display: block;
+  margin: 0 auto;
 }
 
 .clear-btn:hover {
@@ -122,15 +125,16 @@
 
 .word-item {
   background: #f3f4f6;
-  padding: 0.75rem;
-  border-radius: 6px;
+  padding: 1rem;
+  border-radius: 8px;
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
   color: #374151;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   transition: background-color 0.2s;
   cursor: pointer;
+  font-size: 1.1rem;
 }
 
 .word-item:hover {
@@ -179,6 +183,65 @@
   color: #374151;
   font-size: 1.5rem;
   text-align: center;
+}
+
+.word-input-section {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.word-input-container {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.word-input {
+  padding: 0.75rem 1rem;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  min-width: 150px;
+  transition: all 0.2s;
+}
+
+.word-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.add-word-btn {
+  background: #059669;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.add-word-btn:hover:not(:disabled) {
+  background: #047857;
+  transform: translateY(-1px);
+}
+
+.add-word-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .instructions {
@@ -231,14 +294,79 @@
 .wordle-grid {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
 
 .guess-row {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.75rem;
   justify-content: center;
+}
+
+.guess-letters {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.guess-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+.delete-btn {
+  background: #fef2f2;
+  border: 2px solid #fca5a5;
+  border-radius: 6px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.delete-btn:hover {
+  background: #fee2e2;
+  border-color: #f87171;
+}
+
+.input-btn {
+  background: #f0f9ff;
+  border: 2px solid #7dd3fc;
+  border-radius: 6px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.input-btn:hover {
+  background: #e0f2fe;
+  border-color: #38bdf8;
+}
+
+.empty-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  opacity: 0.5;
+}
+
+.slot-number {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
 }
 
 .letter-container {
@@ -256,8 +384,6 @@
   text-transform: uppercase;
   transition: all 0.2s;
   cursor: pointer;
-  background: white;
-  color: #374151;
 }
 
 .letter-input:focus {
@@ -266,34 +392,231 @@
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
-.letter-input.empty {
-  background: white;
-  color: #374151;
-  border-color: #d1d5db;
-}
-
-.letter-input.absent {
-  background: #6b7280;
-  color: white;
+/* Boxes with letters - colored based on status */
+.letter-input.absent.has-letter {
+  background: #6b7280 !important;
+  color: white !important;
   border-color: #6b7280;
 }
 
-.letter-input.present {
-  background: #d97706;
-  color: white;
+.letter-input.present.has-letter {
+  background: #d97706 !important;
+  color: white !important;
   border-color: #d97706;
 }
 
-.letter-input.correct {
-  background: #059669;
-  color: white;
+.letter-input.correct.has-letter {
+  background: #059669 !important;
+  color: white !important;
   border-color: #059669;
+}
+
+/* Empty box (no letter) - ALWAYS white background, override any status */
+.letter-input:not(.has-letter) {
+  background: white !important;
+  color: #9ca3af !important;
+  border-color: #d1d5db !important;
+  cursor: text !important;
+}
+
+/* Prevent hover effects on empty letter inputs */
+.letter-input:not(.has-letter):hover {
+  transform: none !important;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Letter display (non-editable) styles */
+.letter-display {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+/* Boxes with letters - colored based on status */
+.letter-display.absent.has-letter {
+  background: #6b7280 !important;
+  color: white !important;
+  border-color: #6b7280;
+}
+
+.letter-display.present.has-letter {
+  background: #d97706 !important;
+  color: white !important;
+  border-color: #d97706;
+}
+
+.letter-display.correct.has-letter {
+  background: #059669 !important;
+  color: white !important;
+  border-color: #059669;
+}
+
+/* Empty box (no letter) - ALWAYS white background, override any status */
+.letter-display:not(.has-letter) {
+  background: white !important;
+  color: #9ca3af !important;
+  border-color: #d1d5db !important;
+  cursor: default !important;
+}
+
+/* Prevent hover effects on empty letter displays */
+.letter-display:not(.has-letter):hover {
+  transform: none !important;
+}
+
+.letter-display:hover {
+  transform: scale(1.05);
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 400px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  animation: modalSlideIn 0.2s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-header {
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  padding-bottom: 1rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-body p {
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.modal-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid;
+  min-width: 80px;
+}
+
+.cancel-btn {
+  background: white;
+  color: #6b7280;
+  border-color: #d1d5db;
+}
+
+.cancel-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.confirm-btn {
+  background: #dc2626;
+  color: white;
+  border-color: #dc2626;
+}
+
+.confirm-btn:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+/* Modal responsive styles */
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+  
+  .modal-content {
+    max-width: 100%;
+  }
+  
+  .modal-header {
+    padding: 1rem 1rem 0 1rem;
+  }
+  
+  .modal-header h3 {
+    font-size: 1.125rem;
+  }
+  
+  .modal-body {
+    padding: 1rem;
+  }
+  
+  .modal-actions {
+    padding: 0 1rem 1rem 1rem;
+    flex-direction: column-reverse;
+  }
+  
+  .modal-btn {
+    width: 100%;
+  }
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
   .app {
-    padding: 0.5rem;
+    padding: 0;
+    margin: 0; /* Remove auto margin on mobile */
   }
   
   .header h1 {
@@ -309,13 +632,13 @@
   }
   
   .words-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(3, 1fr); /* Display exactly 3 words per row on mobile */
     gap: 0.5rem;
   }
   
   .word-item {
-    padding: 0.5rem;
-    font-size: 0.9rem;
+    padding: 0.75rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -333,7 +656,7 @@
   }
   
   .words-grid {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    grid-template-columns: repeat(3, 1fr); /* Keep 3 columns on smaller mobile */
   }
 }
 
@@ -342,6 +665,7 @@
   .app {
     max-width: 100%;
     padding: 0.5rem;
+    margin: 0; /* Remove auto margin */
   }
   
   .header h1 {
@@ -350,6 +674,24 @@
   
   .game-section {
     padding: 1rem;
+  }
+
+  .word-input-section {
+    padding: 1rem;
+  }
+
+  .word-input-container {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .word-input {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .add-word-btn {
+    width: 100%;
   }
   
   .color-legend {
@@ -371,19 +713,36 @@
     height: 45px;
     font-size: 1.25rem;
   }
+
+  .delete-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 0.875rem;
+  }
   
   .guess-row {
     gap: 0.375rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .guess-letters {
+    gap: 0.375rem;
+  }
+
+  .guess-actions {
+    gap: 0.375rem;
+    margin-left: 0;
   }
   
   .words-grid {
-    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)) !important;
+    grid-template-columns: repeat(3, 1fr) !important; /* Ensure 3 columns */
     gap: 0.375rem;
   }
   
   .word-item {
-    padding: 0.375rem;
-    font-size: 0.75rem;
+    padding: 0.5rem;
+    font-size: 1.2rem;
   }
 }
 
@@ -393,10 +752,28 @@
     height: 40px;
     font-size: 1.1rem;
   }
+
+  .delete-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.75rem;
+  }
   
   .color-legend {
     flex-direction: column;
     align-items: center;
     gap: 0.75rem;
+  }
+
+  .guess-row {
+    gap: 0.25rem;
+  }
+
+  .guess-letters {
+    gap: 0.25rem;
+  }
+
+  .guess-actions {
+    gap: 0.25rem;
   }
 }
